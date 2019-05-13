@@ -22,7 +22,6 @@
 
 /* code */
 
-
 /**
  * @file vehicle.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -35,14 +34,24 @@
 
 #include "../include/mmrs_simulator/vehicle.h"
 
+/*
+ * WARNING - id initialization is not thread safe. Vehicles shouldn't
+ * be created in separated threads, otherwise their ID's may not be
+ * unique. 
+ * 
+ * NOTE - this constructor is the only way of creating vehicle with
+ * unique ID, copy or move constructor don't provide that
+ */
+
 Vehicle::Vehicle() : radius_m_{kDefaultRadius},
                      max_velocity_ms_{kDefaultMaxVelocity},
                      acceleration_ms2_{kDefaultAcceleration},
                      deceleration_ms2_{kDefaultDeceleration},
                      current_position_m_{0.0},
                      current_velocity_ms_{0.0},
-                     current_stage_{0},
-                     is_moving_{true}
+                     current_stages_(1, 0),  // init with stage 0
+                     is_moving_{true},
+                     id_{id_counter_++}
 {
 }
 

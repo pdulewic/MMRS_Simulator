@@ -38,7 +38,7 @@
 bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
 {
   instance.first.Advance(1.0 / rate_hz_);
-  instance.second.UpdateStage(instance.first);
+  instance.second.CheckSpecialPoints(instance.first);
   return instance.second.CheckIfCompleted(instance.first);
 }
 
@@ -52,9 +52,9 @@ Task::Task(std::string filename, double rate_hz): rate_hz_{rate_hz}
     for (int i = 0; i < number_of_vehicles_; ++i)
     {
       //vehicles_.push_back(default_vehicle);
-      paths_.push_back(std::make_pair(default_vehicle,
+      paths_.push_back(std::make_pair(Vehicle{},
                                       Path{
-                                        default_vehicle, {5.6, 8.1, 6.4, 9.2, 7.7}
+                                        default_vehicle, {5.6, 6.1, 6.4, 9.2, 11.6}
                                       }));
     }
   }

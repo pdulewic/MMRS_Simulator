@@ -56,8 +56,9 @@ class Path
    * @brief vector containing locations of endpoints of each stage
    * 
    * The 1-st stage (with index 0) starts in point 0.0 and ends in
-   * stages_[0], so it's length is equal to stages_[0]. Length of any
-   * other, i-th stage can be calculated as stages_[i] - stages_[i-1].
+   * stages_[0], so it's length is equal to stages_[0]. i-th stage 
+   * ends in stages_[i-1] point. Length of any i-th stage can be 
+   * calculated as stages_[i] - stages_[i-1].
    */
   std::vector<double> stages_;
   /**
@@ -77,13 +78,12 @@ public:
    */
   Path(const Vehicle &vehicle, std::initializer_list<double> stages);
   /**
-   * @brief checks if the vehicle has reached its next stage
-   * 
-   * @param vehicle - vehicle to be checked
-   */
-  void UpdateStage(Vehicle &vehicle) const;
-  /**
    * @brief checks if the vehicle has reached its next special point
+   * 
+   * After reaching a special point, the appropriate action is taken. For
+   * critical point it's broadcasting the 'cp' event. Transition point means
+   * entering a new stage by the vehicle. Release point causes both sending
+   * 'rp' event and updating vehicle state (leaving corresponding stage).
    * 
    * @param vehicle - vehicle to be checked
    */

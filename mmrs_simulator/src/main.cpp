@@ -43,15 +43,18 @@ int main(int argc, char *argv[])
   ros::Rate loop_rate(kDefaultSimulationRateHz);
 
   Task task;
+  int step_counter = 0;
 
   while(ros::ok())
   {
+    // execute simulation steps until all vehicles are done
     if(task.SimulationStep())
     {
       ROS_INFO("Task completed!");
       break;
     }
-    ROS_INFO("Hello World!");
+    ROS_INFO("Simulation step number %d", step_counter);
+    step_counter++;
     ros::spinOnce();
     loop_rate.sleep();
   }

@@ -22,7 +22,6 @@
 
 /* code */
 
-
 /**
  * @file vehicle.h
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -35,11 +34,12 @@
 
 #pragma once
 
+#include <deque>
 
-const double kDefaultRadius = 0.5;  // meters
-const double kDefaultMaxVelocity = 0.65;   // meters per second
-const double kDefaultAcceleration = 0.2;   // meters per square seconds
-const double kDefaultDeceleration = 0.6;   // meters per square seconds
+const double kDefaultRadius = 0.5;       // meters
+const double kDefaultMaxVelocity = 0.65; // meters per second
+const double kDefaultAcceleration = 0.2; // meters per square seconds
+const double kDefaultDeceleration = 0.6; // meters per square seconds
 
 /**
  * @brief Class representing single vehicle with basic dynamics
@@ -47,36 +47,44 @@ const double kDefaultDeceleration = 0.6;   // meters per square seconds
  */
 class Vehicle
 {
+  inline static int id_counter_ = 0;
+
   // constant parameters
   const double radius_m_;
   const double max_velocity_ms_;
   const double acceleration_ms2_;
   const double deceleration_ms2_;
+  const int id_;
 
   // state of the vehicle
   double current_position_m_;
   double current_velocity_ms_;
-  int current_stage_;
+  /**
+   * @brief currently occupied stages
+   * 
+   */
+  std::deque<int> current_stages_;
   bool is_moving_;
 
 public:
   Vehicle();
-  double GetRadius() const {return radius_m_;}
-  double GetMaxVelocity() const {return max_velocity_ms_;}
-  double GetAcceleration() const {return acceleration_ms2_;}
-  double GetDeceleration() const {return deceleration_ms2_;}
-  double GetCurrentStage() const {return current_stage_;}
-  double GetCurrentPosition() const {return current_position_m_;}
+  double GetRadius() const { return radius_m_; }
+  double GetMaxVelocity() const { return max_velocity_ms_; }
+  double GetAcceleration() const { return acceleration_ms2_; }
+  double GetDeceleration() const { return deceleration_ms2_; }
+  double GetCurrentPosition() const { return current_position_m_; }
+  int GetID() const { return id_; }
 
   /**
    * @brief drives forward for time_s seconds
    * 
    * Updates the velocity and calculates the distance traveled in 
-   * the next time_s seconds. 
+   * the next time_s seconds considering vehicles dynamics. 
    * 
-   * @param time_s - duration of the move
+   * @param time_s - duration of the movement
    */
   void Advance(double time_s);
-  void ProceedToNextStage() {current_stage_++;}
-  void Stop() {is_moving_ = false;}
+  void EnterNextStage() { current_stages_.push_back(current_stages_.back() + 1); }
+  void LeavePreviousStage() { current_stages_.pop_front(); }
+  void Stop() { is_moving_ = false; }
 };

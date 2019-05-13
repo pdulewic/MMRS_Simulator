@@ -42,7 +42,7 @@
 
 struct SpecialPoint
 {
-  enum PointType {CRITICAL_POINT, RELEASE_POINT};
+  enum PointType {CRITICAL_POINT, TRANSITION_POINT, RELEASE_POINT};
   
   PointType type;
   /**

@@ -22,7 +22,6 @@
 
 /* code */
 
-
 /**
  * @file path.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -34,7 +33,9 @@
  */
 
 #include <iostream> //temporary, should be replaced by ROS_INFO later
+#include <algorithm>
 
+#include "ros/ros.h"
 #include "../include/mmrs_simulator/path.h"
 
 Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stages_{stages}
@@ -57,47 +58,58 @@ Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stage
   {
     special_points_.push_back(SpecialPoint{SpecialPoint::CRITICAL_POINT,
                                            *it - critical_distance});
+    special_points_.push_back(SpecialPoint{SpecialPoint::TRANSITION_POINT,
+                                           *it - radius});
     special_points_.push_back(SpecialPoint{SpecialPoint::RELEASE_POINT,
                                            *it + radius});
   }
+  std::sort(special_points_.begin(), special_points_.end(),
+            [](SpecialPoint p1, SpecialPoint p2) { return p1.location < p2.location; });
   // skipping last element of stages_, because there are no special
   // points around it
 }
 
-void Path::UpdateStage(Vehicle &vehicle) const
-{
-  while (vehicle.GetCurrentPosition() > stages_[vehicle.GetCurrentStage()])
-  {
-    vehicle.ProceedToNextStage();
-  }
-}
-
 void Path::CheckSpecialPoints(Vehicle &vehicle)
 {
-  if (special_points_.empty())
+  // multiple special point can be reached in one step, so while loop
+  // is used
+  while (!special_points_.empty())
   {
-    return;
-  }
-  while (vehicle.GetCurrentPosition() > special_points_[0].location)
-  {
-    switch (special_points_[0].type)
+    if (vehicle.GetCurrentPosition() > special_points_[0].location)
     {
-    case SpecialPoint::CRITICAL_POINT:
-      std::cout << "Critical point reached!" << std::endl;
-      break;
-    case SpecialPoint::RELEASE_POINT:
-      std::cout << "Release point reached!" << std::endl;
-      break;
-    default:
-      break;
+      // special point reached
+      switch (special_points_[0].type)
+      {
+      case SpecialPoint::CRITICAL_POINT:
+        std::cout << "Critical point reached for vehicle " << vehicle.GetID()
+                  << " in " << special_points_[0].location << std::endl;
+        break;
+      case SpecialPoint::TRANSITION_POINT:
+        std::cout << "Transition point reached for vehicle " << vehicle.GetID()
+                  << " in " << special_points_[0].location << std::endl;
+        vehicle.EnterNextStage();
+        break;
+      case SpecialPoint::RELEASE_POINT:
+        std::cout << "Release point reached for vehicle " << vehicle.GetID()
+                  << " in " << special_points_[0].location << std::endl;
+        vehicle.LeavePreviousStage();
+        break;
+      default:
+        break;
+      }
+      special_points_.pop_front();
+    }
+    else
+    {
+      // special point not reached yet
+      return;
     }
   }
-  special_points_.pop_front();
 }
 
 bool Path::CheckIfCompleted(Vehicle &vehicle) const
 {
-  if(vehicle.GetCurrentPosition() >= stages_.back())
+  if (vehicle.GetCurrentPosition() >= stages_.back())
   {
     vehicle.Stop();
     return true;
