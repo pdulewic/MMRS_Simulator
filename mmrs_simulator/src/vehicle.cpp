@@ -20,8 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
 /**
  * @file vehicle.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -33,6 +31,8 @@
  */
 
 #include "../include/mmrs_simulator/vehicle.h"
+
+using namespace mmrs;
 
 /*
  * WARNING - id initialization is not thread safe. Vehicles shouldn't

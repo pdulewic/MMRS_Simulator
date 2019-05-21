@@ -20,9 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
-
 /**
  * @file main.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -40,9 +37,9 @@ int main(int argc, char *argv[])
 {
   ros::init(argc, argv, "simulator");
   ros::NodeHandle node_handle;
-  ros::Rate loop_rate(kDefaultSimulationRateHz);
+  ros::Rate loop_rate(mmrs::kDefaultSimulationRateHz);
 
-  Task task;
+  mmrs::Task task;
   int step_counter = 0;
 
   while(ros::ok())

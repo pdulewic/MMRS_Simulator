@@ -20,9 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
-
 /**
  * @file path.h
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -41,6 +38,9 @@
 
 #include "special_point.h"
 #include "vehicle.h"
+
+namespace mmrs
+{
 
 /**
  * @brief class representing path of a vehicle
@@ -66,7 +66,7 @@ class Path
    * 
    * Contains locations of critical and release points on path
    */
-  std::deque<SpecialPoint> special_points_;
+  std::deque<mmrs::SpecialPoint> special_points_;
 
 public:
   /**
@@ -76,7 +76,7 @@ public:
    * etc.) used for calculating special points
    * @param stages - locations of endpoints of each stage
    */
-  Path(const Vehicle &vehicle, std::initializer_list<double> stages);
+  Path(const mmrs::Vehicle &vehicle, std::initializer_list<double> stages);
   /**
    * @brief checks if the vehicle has reached its next special point
    * 
@@ -87,7 +87,7 @@ public:
    * 
    * @param vehicle - vehicle to be checked
    */
-  void CheckSpecialPoints(Vehicle &vehicle);
+  void CheckSpecialPoints(mmrs::Vehicle &vehicle);
   /**
    * @brief checks if the vehicle has completed its path
    * 
@@ -95,5 +95,7 @@ public:
    * @return true - task completed
    * @return false - task not completed yet
    */
-  bool CheckIfCompleted(Vehicle &vehicle) const;
+  bool CheckIfCompleted(mmrs::Vehicle &vehicle) const;
 };
+
+} // namespace mmrs

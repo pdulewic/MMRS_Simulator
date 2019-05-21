@@ -20,8 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
 /**
  * @file path.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -37,6 +35,8 @@
 
 #include "ros/ros.h"
 #include "../include/mmrs_simulator/path.h"
+
+using namespace mmrs;
 
 Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stages_{stages}
 {

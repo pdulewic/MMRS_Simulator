@@ -20,9 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
-
 /**
  * @file task.h
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -43,6 +40,9 @@
 #include "vehicle.h"
 #include "path.h"
 
+namespace mmrs
+{
+
 const double kDefaultSimulationRateHz = 10.0;
 
 /**
@@ -59,7 +59,7 @@ class Task
    * @brief vehicles with their associated paths
    * 
    */
-  std::vector<std::pair<Vehicle, Path>> paths_;
+  std::vector<std::pair<mmrs::Vehicle, mmrs::Path>> paths_;
   /**
    * @brief number of simulation steps in one second
    * 
@@ -73,7 +73,7 @@ class Task
    * @return true - vehicle completed its task after this step
    * @return false - vehicle didn't completed its task after this step
    */
-  bool UpdateVehicle(std::pair<Vehicle, Path> &instance);
+  bool UpdateVehicle(std::pair<mmrs::Vehicle, mmrs::Path> &instance);
 
 public:
   /**
@@ -91,3 +91,5 @@ public:
    */
   bool SimulationStep();
 };
+
+} // namespace mmrs

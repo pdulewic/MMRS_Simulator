@@ -20,8 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
 /**
  * @file vehicle.h
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -35,6 +33,9 @@
 #pragma once
 
 #include <deque>
+
+namespace mmrs
+{
 
 const double kDefaultRadius = 0.5;       // meters
 const double kDefaultMaxVelocity = 0.65; // meters per second
@@ -88,3 +89,5 @@ public:
   void LeavePreviousStage() { current_stages_.pop_front(); }
   void Stop() { is_moving_ = false; }
 };
+
+} // namespace mmrs

@@ -21,42 +21,42 @@
 //  DEALINGS IN THE SOFTWARE.
 
 /**
- * @file special_point.h
+ * @file main.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
- * @brief mmrs_simulator package
+ * @brief dummy controller used only for testing, allows every pass
  * @date 2019-04-23
  * 
  * @copyright Copyright (c) 2019
  * 
  */
 
-#pragma once
+#include "ros/ros.h"
+#include "std_msgs/Int16.h"
 
-namespace mmrs
+ros::Publisher permission_publisher;
+
+void CriticalPointCallback(const std_msgs::Int16::ConstPtr &msg)
 {
+  std_msgs::Int16 output_msg;
+  output_msg.data = msg->data;
+  permission_publisher.publish(output_msg);
+}
 
-/**
- * @brief Simple struct representing characteristic points on path
- * 
- */
-
-struct SpecialPoint
+void ReleasePointCallback(const std_msgs::Int16::ConstPtr &msg)
 {
-  enum PointType
-  {
-    CRITICAL_POINT,
-    TRANSITION_POINT,
-    RELEASE_POINT
-  };
+  ROS_INFO("%d", msg->data);
+}
 
-  PointType type;
-  /**
-   * @brief location of the special point 
-   * 
-   * Location is represented as a distance from the beggining
-   * of the path
-   */
-  double location;
-};
-
-} // namespace mmrs
+int main(int argc, char *argv[])
+{
+  ros::init(argc, argv, "dummy_controller");
+  ros::NodeHandle node_handle;
+  permission_publisher = node_handle.advertise<std_msgs::Int16>(
+      "move_permissions", 1000);
+  auto critical_point_subscriber = node_handle.subscribe("critical_points",
+                                                         1000, CriticalPointCallback);
+  auto release_point_subscriber = node_handle.subscribe("release_points",
+                                                        1000, ReleasePointCallback);
+  ros::spin();
+  return 0;
+}

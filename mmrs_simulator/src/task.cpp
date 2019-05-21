@@ -20,8 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-/* code */
-
 
 /**
  * @file task.cpp
@@ -34,6 +32,8 @@
  */
 
 #include "../include/mmrs_simulator/task.h"
+
+using namespace mmrs;
 
 bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
 {
