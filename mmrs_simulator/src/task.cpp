@@ -20,7 +20,6 @@
 //  FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 //  DEALINGS IN THE SOFTWARE.
 
-
 /**
  * @file task.cpp
  * @author Piotr Dulewicz (piotr.dulewicz@pwr.edu.pl)
@@ -42,20 +41,20 @@ bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
   return instance.second.CheckIfCompleted(instance.first);
 }
 
-Task::Task(std::string filename, double rate_hz): rate_hz_{rate_hz}
+Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
 {
   if (filename.empty())
   {
     //hardcoded initialization, only for testing
     number_of_vehicles_ = 5;
-    Vehicle default_vehicle = Vehicle{};
+    Vehicle default_vehicle = Vehicle{5000};
     for (int i = 0; i < number_of_vehicles_; ++i)
     {
       //vehicles_.push_back(default_vehicle);
-      paths_.push_back(std::make_pair(Vehicle{},
-                                      Path{
-                                        default_vehicle, {5.6, 6.1, 6.4, 9.2, 11.6}
-                                      }));
+
+      paths_.push_back(std::make_pair(Vehicle{i},
+                                      Path{default_vehicle, {5.6, 6.1, 6.4, 9.2, 11.6}}));
+      
     }
   }
 }

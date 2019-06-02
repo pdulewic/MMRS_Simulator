@@ -48,7 +48,7 @@ const double kDefaultDeceleration = 0.6; // meters per square seconds
  */
 class Vehicle
 {
-  inline static int id_counter_ = 0;
+  //inline static unsigned id_counter_ = 0;
 
   // constant parameters
   const double radius_m_;
@@ -68,7 +68,7 @@ class Vehicle
   bool is_moving_;
 
 public:
-  Vehicle();
+  Vehicle(int id);
   double GetRadius() const { return radius_m_; }
   double GetMaxVelocity() const { return max_velocity_ms_; }
   double GetAcceleration() const { return acceleration_ms2_; }
