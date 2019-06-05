@@ -37,6 +37,7 @@
 #include <utility>
 
 #include "ros/ros.h"
+#include "std_msgs/Int16.h"
 #include "vehicle.h"
 #include "path.h"
 
@@ -65,6 +66,11 @@ class Task
    * 
    */
   double rate_hz_;
+  /**
+   * @brief Used for creating movement permission subscriber
+   */
+  ros::NodeHandle node_handle_;
+  ros::Subscriber permission_subscriber_; 
 
   /**
    * @brief moves forward single vehicle
@@ -74,6 +80,15 @@ class Task
    * @return false - vehicle didn't completed its task after this step
    */
   bool UpdateVehicle(std::pair<mmrs::Vehicle, mmrs::Path> &instance);
+
+  /**
+   * @brief callback for granting movement permission event
+   * 
+   * Activates when the controller assigns movement permission to a vehicle. 
+   * 
+   * @param msg - ROS message with vehicles ID
+   */
+  void PermissionCallback(const std_msgs::Int16::ConstPtr &msg);
 
 public:
   /**

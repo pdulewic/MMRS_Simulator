@@ -81,3 +81,29 @@ void Vehicle::Advance(double time_s)
   // calculate shift distance
   current_position_m_ += time_s * current_velocity_ms_;
 }
+
+void Vehicle::GrantMovementPermission()
+{
+  if(!is_moving_)
+  {
+    is_moving_ = true;
+  }
+  else
+  {
+    permission_counter_++;
+  }
+  
+}
+
+void Vehicle::CheckMovementPermission()
+{
+  if(permission_counter_)
+  {
+    permission_counter_--;
+  }
+  else
+  {
+    is_moving_ = false;
+  }
+  
+}

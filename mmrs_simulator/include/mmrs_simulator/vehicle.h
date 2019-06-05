@@ -93,6 +93,8 @@ public:
   void EnterNextStage() { current_stages_.push_back(current_stages_.back() + 1); }
   void LeavePreviousStage() { current_stages_.pop_front(); }
   void Stop() { is_moving_ = false; }
+  void GrantMovementPermission();
+  void CheckMovementPermission();
 };
 
 } // namespace mmrs

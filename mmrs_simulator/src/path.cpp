@@ -92,6 +92,7 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
       case SpecialPoint::CRITICAL_POINT:
         std::cout << "Critical point reached for vehicle " << vehicle.GetID()
                   << " in " << special_points_[0].location << std::endl;
+        vehicle.CheckMovementPermission();
         critical_point_publisher_.publish(vehicle_ID);
         break;
       case SpecialPoint::TRANSITION_POINT:

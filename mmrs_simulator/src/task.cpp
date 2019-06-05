@@ -41,6 +41,11 @@ bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
   return instance.second.CheckIfCompleted(instance.first);
 }
 
+void Task::PermissionCallback(const std_msgs::Int16::ConstPtr &msg)
+{
+  paths_[msg->data].first.GrantMovementPermission();
+}
+
 Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
 {
   if (filename.empty())
@@ -54,9 +59,11 @@ Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
 
       paths_.push_back(std::make_pair(Vehicle{i},
                                       Path{default_vehicle, {5.6, 6.1, 6.4, 9.2, 11.6}}));
-      
     }
   }
+  permission_subscriber_ = node_handle_.subscribe("move_permissions", 1000,
+                                                  &Task::PermissionCallback,
+                                                  this);
 }
 
 bool Task::SimulationStep()
