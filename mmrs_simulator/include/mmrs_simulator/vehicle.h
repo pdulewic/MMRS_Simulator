@@ -66,6 +66,11 @@ class Vehicle
    */
   std::deque<int> current_stages_;
   bool is_moving_;
+  /**
+   * @brief counts movement permissions granted by the controller
+   * 
+   */
+  int permission_counter_;
 
 public:
   Vehicle(int id);

@@ -36,6 +36,7 @@
 #include <deque>
 #include <initializer_list>
 
+#include "ros/ros.h"
 #include "special_point.h"
 #include "vehicle.h"
 
@@ -67,6 +68,18 @@ class Path
    * Contains locations of critical and release points on path
    */
   std::deque<mmrs::SpecialPoint> special_points_;
+
+  /**
+   * @brief Used for creating special point publishers
+   * 
+   * This NodeHandle allows us to create publishers for "critical_points"
+   * and "release_points" topics. 
+   */
+  ros::NodeHandle node_handle_;
+
+  // special point publishers
+  ros::Publisher critical_point_publisher_;
+  ros::Publisher release_point_publisher_;
 
 public:
   /**

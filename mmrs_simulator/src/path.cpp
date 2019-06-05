@@ -33,7 +33,7 @@
 #include <iostream> //temporary, should be replaced by ROS_INFO later
 #include <algorithm>
 
-#include "ros/ros.h"
+#include "std_msgs/Int16.h"
 #include "../include/mmrs_simulator/path.h"
 
 using namespace mmrs;
@@ -63,26 +63,36 @@ Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stage
     special_points_.push_back(SpecialPoint{SpecialPoint::RELEASE_POINT,
                                            *it + radius});
   }
+  // skipping last element of stages_, because there are no special points
+  // around it
+
   std::sort(special_points_.begin(), special_points_.end(),
             [](SpecialPoint p1, SpecialPoint p2) { return p1.location < p2.location; });
-  // skipping last element of stages_, because there are no special
-  // points around it
+
+  // publishers initialization
+  critical_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
+      "critical_points", 1000);
+  release_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
+      "release_points", 1000);
 }
 
 void Path::CheckSpecialPoints(Vehicle &vehicle)
 {
-  // multiple special point can be reached in one step, so while loop
-  // is used
+  // multiple special points can be reached in one step, so while loop is used
   while (!special_points_.empty())
   {
     if (vehicle.GetCurrentPosition() > special_points_[0].location)
     {
-      // special point reached
+      // special point reached, preparing ROS message with vehicle ID
+      std_msgs::Int16 vehicle_ID;
+      vehicle_ID.data = vehicle.GetID();
+
       switch (special_points_[0].type)
       {
       case SpecialPoint::CRITICAL_POINT:
         std::cout << "Critical point reached for vehicle " << vehicle.GetID()
                   << " in " << special_points_[0].location << std::endl;
+        critical_point_publisher_.publish(vehicle_ID);
         break;
       case SpecialPoint::TRANSITION_POINT:
         std::cout << "Transition point reached for vehicle " << vehicle.GetID()
@@ -93,6 +103,7 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
         std::cout << "Release point reached for vehicle " << vehicle.GetID()
                   << " in " << special_points_[0].location << std::endl;
         vehicle.LeavePreviousStage();
+        release_point_publisher_.publish(vehicle_ID);
         break;
       default:
         break;
@@ -101,7 +112,7 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
     }
     else
     {
-      // special point not reached yet
+      // special points not reached yet
       return;
     }
   }

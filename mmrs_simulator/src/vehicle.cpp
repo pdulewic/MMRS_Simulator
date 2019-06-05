@@ -47,7 +47,8 @@ Vehicle::Vehicle(int id = -1) : radius_m_{kDefaultRadius},
                                 current_velocity_ms_{0.0},
                                 current_stages_(1, 0), // init with stage 0
                                 is_moving_{true},
-                                id_{id}
+                                id_{id},
+                                permission_counter_{0}
 {
 }
 

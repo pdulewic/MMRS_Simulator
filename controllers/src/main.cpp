@@ -37,6 +37,7 @@ ros::Publisher permission_publisher;
 
 void CriticalPointCallback(const std_msgs::Int16::ConstPtr &msg)
 {
+  ROS_INFO("critical point reached by vehicle %d", msg->data);
   std_msgs::Int16 output_msg;
   output_msg.data = msg->data;
   permission_publisher.publish(output_msg);
@@ -44,7 +45,7 @@ void CriticalPointCallback(const std_msgs::Int16::ConstPtr &msg)
 
 void ReleasePointCallback(const std_msgs::Int16::ConstPtr &msg)
 {
-  ROS_INFO("%d", msg->data);
+  ROS_INFO("release point reached by vehicle %d", msg->data);
 }
 
 int main(int argc, char *argv[])
