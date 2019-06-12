@@ -35,6 +35,7 @@
 #include <vector>
 #include <deque>
 #include <initializer_list>
+#include <utility>
 
 #include "ros/ros.h"
 #include "special_point.h"
@@ -97,11 +98,27 @@ public:
    * After reaching a special point, the appropriate action is taken. For
    * critical point it's broadcasting the 'cp' event. Transition point means
    * entering a new stage by the vehicle. Release point causes both sending
-   * 'rp' event and updating vehicle state (leaving corresponding stage).
+   * 'rp' event and updating vehicle state (leaving corresponding stage). Also,
+   * if new sector has been entered, function returns true. 
    * 
    * @param vehicle - vehicle to be checked
+   * @return true - vehicle has entered its next stage
+   * @return false - vehicle hasn't entered its next stage
    */
-  void CheckSpecialPoints(mmrs::Vehicle &vehicle);
+  bool CheckSpecialPoints(mmrs::Vehicle &vehicle);
+  /**
+   * @brief checks if sector collides with vehicle on that path
+   * 
+   * Given a sector index 'sector', this function determines whether the sector 
+   * given as an argument collides with any of the sectors occupied by the 
+   * vehicle on that path
+   * 
+   * @param vehicle - vehicle on current path
+   * @param sector - sector with which the collision is checked
+   * @return true - collision occurs
+   * @return false - collision does not occur
+   */
+  bool CheckCollision(const mmrs::Vehicle &vehicle, std::pair<int,int> sector) const;
   /**
    * @brief checks if the vehicle has completed its path
    * 

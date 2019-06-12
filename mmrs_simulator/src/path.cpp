@@ -76,8 +76,9 @@ Path::Path(const Vehicle &vehicle, std::initializer_list<Sector> stages) : stage
       "release_points", 1000);
 }
 
-void Path::CheckSpecialPoints(Vehicle &vehicle)
+bool Path::CheckSpecialPoints(Vehicle &vehicle)
 {
+  bool has_entered_next_stage = false;
   // multiple special points can be reached in one step, so while loop is used
   while (!special_points_.empty())
   {
@@ -99,6 +100,7 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
         std::cout << "Transition point reached for vehicle " << vehicle.GetID()
                   << " in " << special_points_[0].location << std::endl;
         vehicle.EnterNextStage();
+        has_entered_next_stage = true;
         break;
       case SpecialPoint::RELEASE_POINT:
         std::cout << "Release point reached for vehicle " << vehicle.GetID()
@@ -114,9 +116,24 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
     else
     {
       // special points not reached yet
-      return;
+      break;
+    }
+    
+  }
+  return has_entered_next_stage;
+}
+
+bool Path::CheckCollision(const Vehicle &vehicle, std::pair<int,int> sector) const
+{
+  auto stages = vehicle.GetCurrentStages();
+  for(auto index : stages)
+  {
+    if(stages_[index].IsColliding(sector))
+    {
+      return true;
     }
   }
+  return false;
 }
 
 bool Path::CheckIfCompleted(Vehicle &vehicle) const

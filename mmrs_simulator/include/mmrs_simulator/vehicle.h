@@ -33,6 +33,7 @@
 #pragma once
 
 #include <deque>
+#include <utility>
 
 namespace mmrs
 {
@@ -80,6 +81,11 @@ public:
   double GetDeceleration() const { return deceleration_ms2_; }
   double GetCurrentPosition() const { return current_position_m_; }
   int GetID() const { return id_; }
+  std::pair<int,int> GetLastEnteredSector() const
+  {
+    return std::make_pair(id_, current_stages_.back());
+  }
+  const std::deque<int>& GetCurrentStages() const {return current_stages_;}
 
   /**
    * @brief drives forward for time_s seconds
