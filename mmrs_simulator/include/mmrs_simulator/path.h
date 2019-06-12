@@ -39,6 +39,7 @@
 #include "ros/ros.h"
 #include "special_point.h"
 #include "vehicle.h"
+#include "sector.h"
 
 namespace mmrs
 {
@@ -61,7 +62,7 @@ class Path
    * ends in stages_[i-1] point. Length of any i-th stage can be 
    * calculated as stages_[i] - stages_[i-1].
    */
-  std::vector<double> stages_;
+  std::vector<mmrs::Sector> stages_;
   /**
    * @brief container of special points
    * 
@@ -89,7 +90,7 @@ public:
    * etc.) used for calculating special points
    * @param stages - locations of endpoints of each stage
    */
-  Path(const mmrs::Vehicle &vehicle, std::initializer_list<double> stages);
+  Path(const mmrs::Vehicle &vehicle, std::initializer_list<mmrs::Sector> stages);
   /**
    * @brief checks if the vehicle has reached its next special point
    * 

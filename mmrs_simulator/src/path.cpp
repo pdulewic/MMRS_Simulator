@@ -38,7 +38,7 @@
 
 using namespace mmrs;
 
-Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stages_{stages}
+Path::Path(const Vehicle &vehicle, std::initializer_list<Sector> stages) : stages_{stages}
 {
   // make sure that path has at least 2 sectors
   if (stages_.size() < 2)
@@ -57,11 +57,11 @@ Path::Path(const Vehicle &vehicle, std::initializer_list<double> stages) : stage
   for (auto it = stages_.begin(); it != stages_.end() - 1; ++it)
   {
     special_points_.push_back(SpecialPoint{SpecialPoint::CRITICAL_POINT,
-                                           *it - critical_distance});
+                                           it->GetEndpoint() - critical_distance});
     special_points_.push_back(SpecialPoint{SpecialPoint::TRANSITION_POINT,
-                                           *it - radius});
+                                           it->GetEndpoint() - radius});
     special_points_.push_back(SpecialPoint{SpecialPoint::RELEASE_POINT,
-                                           *it + radius});
+                                           it->GetEndpoint() + radius});
   }
   // skipping last element of stages_, because there are no special points
   // around it
@@ -121,7 +121,7 @@ void Path::CheckSpecialPoints(Vehicle &vehicle)
 
 bool Path::CheckIfCompleted(Vehicle &vehicle) const
 {
-  if (vehicle.GetCurrentPosition() >= stages_.back())
+  if (vehicle.GetCurrentPosition() >= stages_.back().GetEndpoint())
   {
     vehicle.Stop();
     return true;

@@ -56,9 +56,8 @@ Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
     for (int i = 0; i < number_of_vehicles_; ++i)
     {
       //vehicles_.push_back(default_vehicle);
-
-      paths_.push_back(std::make_pair(Vehicle{i},
-                                      Path{default_vehicle, {5.6, 6.1, 6.4, 9.2, 11.6}}));
+      Path p{default_vehicle, {Sector{5.6}, Sector{6.1}, Sector{6.4}, Sector{9.2}, Sector{11.6}}};
+      paths_.push_back(std::make_pair(Vehicle{i}, p));
     }
   }
   permission_subscriber_ = node_handle_.subscribe("move_permissions", 1000,
