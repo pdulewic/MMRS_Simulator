@@ -74,18 +74,18 @@ class Vehicle
   int permission_counter_;
 
 public:
-  Vehicle(int id);
+  Vehicle(int id = -1);
   double GetRadius() const { return radius_m_; }
   double GetMaxVelocity() const { return max_velocity_ms_; }
   double GetAcceleration() const { return acceleration_ms2_; }
   double GetDeceleration() const { return deceleration_ms2_; }
   double GetCurrentPosition() const { return current_position_m_; }
   int GetID() const { return id_; }
-  std::pair<int,int> GetLastEnteredSector() const
+  std::pair<int, int> GetLastEnteredSector() const
   {
     return std::make_pair(id_, current_stages_.back());
   }
-  const std::deque<int>& GetCurrentStages() const {return current_stages_;}
+  const std::deque<int> &GetCurrentStages() const { return current_stages_; }
 
   /**
    * @brief drives forward for time_s seconds

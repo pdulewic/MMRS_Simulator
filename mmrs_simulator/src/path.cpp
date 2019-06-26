@@ -38,7 +38,20 @@
 
 using namespace mmrs;
 
-Path::Path(const Vehicle &vehicle, std::initializer_list<Sector> stages) : stages_{stages}
+//-----------------------------------------------------------------------------
+
+Path::Path(std::initializer_list<Sector> stages) : stages_{stages}
+{
+  // publishers initialization
+  critical_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
+      "critical_points", 1000);
+  release_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
+      "release_points", 1000);
+}
+
+//-----------------------------------------------------------------------------
+
+void Path::CalculateSpecialPoints(const Vehicle &vehicle)
 {
   // make sure that path has at least 2 sectors
   if (stages_.size() < 2)
@@ -68,13 +81,9 @@ Path::Path(const Vehicle &vehicle, std::initializer_list<Sector> stages) : stage
 
   std::sort(special_points_.begin(), special_points_.end(),
             [](SpecialPoint p1, SpecialPoint p2) { return p1.location < p2.location; });
-
-  // publishers initialization
-  critical_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
-      "critical_points", 1000);
-  release_point_publisher_ = node_handle_.advertise<std_msgs::Int16>(
-      "release_points", 1000);
 }
+
+//-----------------------------------------------------------------------------
 
 bool Path::CheckSpecialPoints(Vehicle &vehicle)
 {
@@ -118,23 +127,26 @@ bool Path::CheckSpecialPoints(Vehicle &vehicle)
       // special points not reached yet
       break;
     }
-    
   }
   return has_entered_next_stage;
 }
 
-bool Path::CheckCollision(const Vehicle &vehicle, std::pair<int,int> sector) const
+//-----------------------------------------------------------------------------
+
+bool Path::CheckCollision(const Vehicle &vehicle, std::pair<int, int> sector) const
 {
   auto stages = vehicle.GetCurrentStages();
-  for(auto index : stages)
+  for (auto index : stages)
   {
-    if(stages_[index].IsColliding(sector))
+    if (stages_[index].IsColliding(sector))
     {
       return true;
     }
   }
   return false;
 }
+
+//-----------------------------------------------------------------------------
 
 bool Path::CheckIfCompleted(Vehicle &vehicle) const
 {
@@ -146,16 +158,26 @@ bool Path::CheckIfCompleted(Vehicle &vehicle) const
   return false;
 }
 
-void mmrs::to_json(json& j, const Path& p)
+//-----------------------------------------------------------------------------
+
+void mmrs::to_json(json &j, const Path &p)
 {
   j = json::array();
-  for(const auto& sector : p.stages_)
+  for (const auto &sector : p.stages_)
   {
     j.push_back(sector);
   }
 }
 
-void mmrs::from_json(const json& j, Path& p)
-{
+//-----------------------------------------------------------------------------
 
+void mmrs::from_json(const json &j, Path &p)
+{
+  p.stages_.clear();
+  for(auto& stage : j)
+  {
+    p.stages_.push_back(stage);
+  }
 }
+
+//-----------------------------------------------------------------------------

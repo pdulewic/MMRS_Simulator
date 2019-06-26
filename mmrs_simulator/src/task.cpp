@@ -35,6 +35,8 @@
 
 using namespace mmrs;
 
+//-----------------------------------------------------------------------------
+
 bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
 {
   instance.first.Advance(1.0 / rate_hz_);
@@ -62,10 +64,14 @@ bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
   return instance.second.CheckIfCompleted(instance.first);
 }
 
+//-----------------------------------------------------------------------------
+
 void Task::PermissionCallback(const std_msgs::Int16::ConstPtr &msg)
 {
   paths_[msg->data].first.GrantMovementPermission();
 }
+
+//-----------------------------------------------------------------------------
 
 Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
 {
@@ -77,7 +83,8 @@ Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
     for (int i = 0; i < number_of_vehicles_; ++i)
     {
       //vehicles_.push_back(default_vehicle);
-      Path p{default_vehicle, {Sector{5.6}, Sector{6.1}, Sector{6.4}, Sector{9.2}, Sector{11.6}}};
+      Path p{{Sector{5.6}, Sector{6.1}, Sector{6.4}, Sector{9.2}, Sector{11.6}}};
+      p.CalculateSpecialPoints(default_vehicle);
       paths_.push_back(std::make_pair(Vehicle{i}, p));
     }
   }
@@ -85,6 +92,8 @@ Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
                                                   &Task::PermissionCallback,
                                                   this);
 }
+
+//-----------------------------------------------------------------------------
 
 bool Task::SimulationStep()
 {
@@ -99,12 +108,14 @@ bool Task::SimulationStep()
   return is_task_completed;
 }
 
-void mmrs::to_json(json& j, const Task& t)
+//-----------------------------------------------------------------------------
+
+void mmrs::to_json(json &j, const Task &t)
 {
   j["NumberOfVehicles"] = t.number_of_vehicles_;
   j["Vehicles"] = json::object();
   int i = 0;
-  for(const auto& path : t.paths_)
+  for (const auto &path : t.paths_)
   {
     auto key = "Vehicle" + std::to_string(i);
     j["Vehicles"][key] = path.second;
@@ -112,7 +123,19 @@ void mmrs::to_json(json& j, const Task& t)
   }
 }
 
-void mmrs::from_json(const json& j, Task& t)
-{
+//-----------------------------------------------------------------------------
 
+void mmrs::from_json(const json &j, Task &t)
+{
+  j.at("NumberOfVehicles").get_to(t.number_of_vehicles_);
+  t.paths_.clear();
+  for (int i = 0; i < t.number_of_vehicles_; ++i)
+  {
+    auto key = "Vehicle" + std::to_string(i);
+    auto path = j.at("Vehicles").at(key).get<Path>();
+    path.CalculateSpecialPoints(Vehicle{});
+    t.paths_.push_back(std::make_pair(Vehicle{i}, path));
+  }
 }
+
+//-----------------------------------------------------------------------------

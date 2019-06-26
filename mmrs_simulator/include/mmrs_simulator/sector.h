@@ -66,6 +66,8 @@ public:
   friend void mmrs::from_json(const json &j, Sector &s);
 };
 
+// special functions descriebed in
+// https://github.com/nlohmann/json#arbitrary-types-conversions
 void to_json(json &j, const Sector &s);
 void from_json(const json &j, Sector &s);
 

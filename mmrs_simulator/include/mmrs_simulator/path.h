@@ -48,7 +48,7 @@ using nlohmann::json;
 namespace mmrs
 {
 
-class Task;
+//class Task;
 
 /**
  * @brief class representing path of a vehicle
@@ -92,11 +92,20 @@ public:
   /**
    * @brief Construct a new Path object
    * 
-   * @param vehicle - source of vehicle properties (radius, max velocity,
-   * etc.) used for calculating special points
    * @param stages - locations of endpoints of each stage
    */
-  Path(const mmrs::Vehicle &vehicle, std::initializer_list<mmrs::Sector> stages);
+  Path(std::initializer_list<mmrs::Sector> stages = {});
+  /**
+   * @brief Calculates poitions of special points
+   * 
+   * This method takes vahicle parameters and uses it for calcutating special
+   * points positions. Path object is not properly initialized before calling
+   * this function. 
+   * 
+   * @param vehicle - source of vehicle properties (radius, max velocity, etc.)
+   *  used for calculating special points
+   */
+  void CalculateSpecialPoints(const mmrs::Vehicle &vehicle);
   /**
    * @brief checks if the vehicle has reached its next special point
    * 
@@ -137,7 +146,8 @@ public:
   friend void mmrs::from_json(const json& j, Path& p);
 };
 
-
+// special functions descriebed in
+// https://github.com/nlohmann/json#arbitrary-types-conversions
 void to_json(json& j, const Path& p);
 void from_json(const json& j, Path& p);
 

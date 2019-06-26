@@ -114,7 +114,6 @@ public:
 
 // special functions descriebed in
 // https://github.com/nlohmann/json#arbitrary-types-conversions
-
 void to_json(json& j, const Task& t);
 void from_json(const json& j, Task& t);
 

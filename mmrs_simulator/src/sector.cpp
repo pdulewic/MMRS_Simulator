@@ -34,10 +34,14 @@
 
 using namespace mmrs;
 
+//-----------------------------------------------------------------------------
+
 Sector::Sector(double endpoint, SectorSet colliding) : endpoint_{endpoint},
                                                                colliding_sectors_{colliding}
 {
 }
+
+//-----------------------------------------------------------------------------
 
 bool Sector::IsColliding(std::pair<int, int> index) const
 {
@@ -45,18 +49,29 @@ bool Sector::IsColliding(std::pair<int, int> index) const
   return search != colliding_sectors_.end();
 }
 
+//-----------------------------------------------------------------------------
 
 void mmrs::to_json(json &j, const Sector &s)
 {
   j["Endpoint"] = s.endpoint_;
   j["Colliding"] = json::array();
-  for(const auto& x : s.colliding_sectors_)
+  for(const auto& index : s.colliding_sectors_)
   {
-    j["Colliding"].push_back(json::array({x.first, x.second}));
+    j["Colliding"].push_back(json::array({index.first, index.second}));
   }
 }
+
+//-----------------------------------------------------------------------------
+
 void mmrs::from_json(const json &j, Sector &s)
 {
-
+  j.at("Endpoint").get_to(s.endpoint_);
+  s.colliding_sectors_.clear();
+  for(auto& index : j["Colliding"])
+  {
+    s.colliding_sectors_.insert(std::pair<int,int>(index.at(0),index.at(1)));
+  }
 
 }
+
+//-----------------------------------------------------------------------------

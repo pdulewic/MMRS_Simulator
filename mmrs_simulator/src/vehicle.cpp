@@ -34,23 +34,27 @@
 
 using namespace mmrs;
 
+//-----------------------------------------------------------------------------
+
 /*
  * NOTE - this constructor is the only way of creating vehicle with
  * unique ID, copy or move constructor don't provide that
  */
 
-Vehicle::Vehicle(int id = -1) : radius_m_{kDefaultRadius},
-                                max_velocity_ms_{kDefaultMaxVelocity},
-                                acceleration_ms2_{kDefaultAcceleration},
-                                deceleration_ms2_{kDefaultDeceleration},
-                                current_position_m_{0.0},
-                                current_velocity_ms_{0.0},
-                                current_stages_(1, 0), // init with stage 0
-                                is_moving_{true},
-                                id_{id},
-                                permission_counter_{0}
+Vehicle::Vehicle(int id) : radius_m_{kDefaultRadius},
+                           max_velocity_ms_{kDefaultMaxVelocity},
+                           acceleration_ms2_{kDefaultAcceleration},
+                           deceleration_ms2_{kDefaultDeceleration},
+                           current_position_m_{0.0},
+                           current_velocity_ms_{0.0},
+                           current_stages_(1, 0), // init with stage 0
+                           is_moving_{true},
+                           id_{id},
+                           permission_counter_{0}
 {
 }
+
+//-----------------------------------------------------------------------------
 
 void Vehicle::Advance(double time_s)
 {
@@ -82,9 +86,11 @@ void Vehicle::Advance(double time_s)
   current_position_m_ += time_s * current_velocity_ms_;
 }
 
+//-----------------------------------------------------------------------------
+
 void Vehicle::GrantMovementPermission()
 {
-  if(!is_moving_)
+  if (!is_moving_)
   {
     is_moving_ = true;
   }
@@ -92,12 +98,13 @@ void Vehicle::GrantMovementPermission()
   {
     permission_counter_++;
   }
-  
 }
+
+//-----------------------------------------------------------------------------
 
 void Vehicle::CheckMovementPermission()
 {
-  if(permission_counter_)
+  if (permission_counter_)
   {
     permission_counter_--;
   }
@@ -105,5 +112,6 @@ void Vehicle::CheckMovementPermission()
   {
     is_moving_ = false;
   }
-  
 }
+
+//-----------------------------------------------------------------------------

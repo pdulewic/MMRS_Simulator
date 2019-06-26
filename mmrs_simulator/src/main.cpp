@@ -34,6 +34,7 @@
 #include "../include/mmrs_simulator/task.h"
 #include "../nlohmann/json.hpp"
 
+#include <fstream>
 #include <iostream>
 
 using nlohmann::json;
@@ -44,17 +45,18 @@ int main(int argc, char *argv[])
   ros::NodeHandle node_handle;
   ros::Rate loop_rate(mmrs::kDefaultSimulationRateHz);
 
-  mmrs::Task task;
-
-  json j = task;  // testing convertion to json
+  std::ifstream i("/home/piotrek/file.json");
+  json j;
+  i >> j;
+  mmrs::Task task = j.get<mmrs::Task>();
   std::cout << j.dump(4) << std::endl;
 
   int step_counter = 0;
 
-  while(ros::ok())
+  while (ros::ok())
   {
     // execute simulation steps until all vehicles are done
-    if(task.SimulationStep())
+    if (task.SimulationStep())
     {
       ROS_INFO("Task completed!");
       break;
