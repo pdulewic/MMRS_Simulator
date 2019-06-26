@@ -145,3 +145,17 @@ bool Path::CheckIfCompleted(Vehicle &vehicle) const
   }
   return false;
 }
+
+void mmrs::to_json(json& j, const Path& p)
+{
+  j = json::array();
+  for(const auto& sector : p.stages_)
+  {
+    j.push_back(sector);
+  }
+}
+
+void mmrs::from_json(const json& j, Path& p)
+{
+
+}

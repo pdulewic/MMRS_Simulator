@@ -44,3 +44,19 @@ bool Sector::IsColliding(std::pair<int, int> index) const
   auto search = colliding_sectors_.find(index);
   return search != colliding_sectors_.end();
 }
+
+
+void mmrs::to_json(json &j, const Sector &s)
+{
+  j["Endpoint"] = s.endpoint_;
+  j["Colliding"] = json::array();
+  for(const auto& x : s.colliding_sectors_)
+  {
+    j["Colliding"].push_back(json::array({x.first, x.second}));
+  }
+}
+void mmrs::from_json(const json &j, Sector &s)
+{
+
+
+}

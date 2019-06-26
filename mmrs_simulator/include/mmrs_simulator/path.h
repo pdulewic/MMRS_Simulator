@@ -37,13 +37,18 @@
 #include <initializer_list>
 #include <utility>
 
+#include "../../nlohmann/json.hpp"
 #include "ros/ros.h"
 #include "special_point.h"
 #include "vehicle.h"
 #include "sector.h"
 
+using nlohmann::json;
+
 namespace mmrs
 {
+
+class Task;
 
 /**
  * @brief class representing path of a vehicle
@@ -127,6 +132,13 @@ public:
    * @return false - task not completed yet
    */
   bool CheckIfCompleted(mmrs::Vehicle &vehicle) const;
+
+  friend void mmrs::to_json(json& j, const Path& p);
+  friend void mmrs::from_json(const json& j, Path& p);
 };
+
+
+void to_json(json& j, const Path& p);
+void from_json(const json& j, Path& p);
 
 } // namespace mmrs

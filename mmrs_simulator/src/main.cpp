@@ -32,6 +32,11 @@
 
 #include "ros/ros.h"
 #include "../include/mmrs_simulator/task.h"
+#include "../nlohmann/json.hpp"
+
+#include <iostream>
+
+using nlohmann::json;
 
 int main(int argc, char *argv[])
 {
@@ -40,6 +45,10 @@ int main(int argc, char *argv[])
   ros::Rate loop_rate(mmrs::kDefaultSimulationRateHz);
 
   mmrs::Task task;
+
+  json j = task;  // testing convertion to json
+  std::cout << j.dump(4) << std::endl;
+
   int step_counter = 0;
 
   while(ros::ok())

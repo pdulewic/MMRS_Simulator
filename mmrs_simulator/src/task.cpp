@@ -37,17 +37,16 @@ using namespace mmrs;
 
 bool Task::UpdateVehicle(std::pair<Vehicle, Path> &instance)
 {
-  //std::cout << "update vehicle started!" << std::endl;
   instance.first.Advance(1.0 / rate_hz_);
   if (instance.second.CheckSpecialPoints(instance.first))
   {
-    //std::cout << "entered new sector, checking collision!" << std::endl;
     // vehicle has entered its next sector, checking collisions
     auto entered_sector = instance.first.GetLastEnteredSector();
-    for (auto &vehicle_and_path : paths_)
+    for (auto &vehicle_and_path : paths_) // checking all other vehicles
     {
       if (instance.first.GetID() == vehicle_and_path.first.GetID())
       {
+        // avoid checking collision with itself
         continue;
       }
       if (vehicle_and_path.second.CheckCollision(vehicle_and_path.first, entered_sector))
@@ -89,7 +88,6 @@ Task::Task(std::string filename, double rate_hz) : rate_hz_{rate_hz}
 
 bool Task::SimulationStep()
 {
-  //std::cout << "simulation step started!" << std::endl;
   bool is_task_completed = true;
   for (auto &vehicle_and_path : paths_)
   {
@@ -99,4 +97,22 @@ bool Task::SimulationStep()
     }
   }
   return is_task_completed;
+}
+
+void mmrs::to_json(json& j, const Task& t)
+{
+  j["NumberOfVehicles"] = t.number_of_vehicles_;
+  j["Vehicles"] = json::object();
+  int i = 0;
+  for(const auto& path : t.paths_)
+  {
+    auto key = "Vehicle" + std::to_string(i);
+    j["Vehicles"][key] = path.second;
+    i++;
+  }
+}
+
+void mmrs::from_json(const json& j, Task& t)
+{
+
 }

@@ -36,10 +36,13 @@
 #include <string>
 #include <utility>
 
+#include "../../nlohmann/json.hpp"
 #include "ros/ros.h"
 #include "std_msgs/Int16.h"
 #include "vehicle.h"
 #include "path.h"
+
+using nlohmann::json;
 
 namespace mmrs
 {
@@ -105,6 +108,16 @@ public:
    * @return false - task is not completed yet
    */
   bool SimulationStep();
+  friend void mmrs::to_json(json& j, const Task& t);
+  friend void mmrs::from_json(const json& j, Task& t);
 };
+
+// special functions descriebed in
+// https://github.com/nlohmann/json#arbitrary-types-conversions
+
+void to_json(json& j, const Task& t);
+void from_json(const json& j, Task& t);
+
+
 
 } // namespace mmrs

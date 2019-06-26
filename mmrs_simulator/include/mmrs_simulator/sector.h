@@ -36,6 +36,10 @@
 #include <utility>
 #include <functional>
 
+#include "../../nlohmann/json.hpp"
+
+using nlohmann::json;
+
 namespace mmrs
 {
 
@@ -57,6 +61,12 @@ public:
   Sector(double endpoint = -1.0, SectorSet colliding = SectorSet());
   bool IsColliding(std::pair<int, int> index) const;
   double GetEndpoint() const { return endpoint_; }
+
+  friend void mmrs::to_json(json &j, const Sector &s);
+  friend void mmrs::from_json(const json &j, Sector &s);
 };
+
+void to_json(json &j, const Sector &s);
+void from_json(const json &j, Sector &s);
 
 } // namespace mmrs
