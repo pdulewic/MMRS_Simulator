@@ -36,16 +36,23 @@
 
 #include <fstream>
 #include <iostream>
+#include <cstdlib>
 
 using nlohmann::json;
 
 int main(int argc, char *argv[])
 {
+  if (argc < 2)
+  {
+    ROS_INFO("Usage: simulator <task_file.json>");
+    exit(-1);
+  }
+
   ros::init(argc, argv, "simulator");
   ros::NodeHandle node_handle;
   ros::Rate loop_rate(mmrs::kDefaultSimulationRateHz);
 
-  std::ifstream i("/home/piotrek/file.json");
+  std::ifstream i(argv[argc-1]);
   json j;
   i >> j;
   mmrs::Task task = j.get<mmrs::Task>();

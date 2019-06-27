@@ -48,8 +48,6 @@ using nlohmann::json;
 namespace mmrs
 {
 
-//class Task;
-
 /**
  * @brief class representing path of a vehicle
  * 
