@@ -30,7 +30,93 @@ The task described in this way contains full information required by the simulat
 ![](pics/special_points.png)
 *__Figure 2:__ Special points of a sector.*
 
-For each sector, we define some *special points* lying on the path. They are shown in Figure 2.  At a distance of *r* after the end of the sector lies the *release point* (*rp*), indicating the place where robots disk no longer overlaps the previous sector. The *critical point* (*cp*) lies at the safe distance (*r + bd*) before the beginning of a sector, where *bd* denotes a *braking distance* - maximum distance needed for the robot to slow down and eventually stop. If the robot starts braking at *cp*, it will not enter the next sector. Reaching *cp* and *rp* by the robot results in sending a message containing its ID to the appropriate ROS topic. This message can be read by the supervisor, deciding which vehicle should obtain *movement permission*. *Movement permission* is a one-time permit for passing to the next sector. Such permits can be sent by the supervisor multiple times, and each robot counts permits granted to it. When the *cp* point is reached, if the permission counter of the given robot is 0, it begins to brake and eventually stops, waiting for the permission from the supervisor. Otherwise, one of the permits is consumed - the robot continues without braking, and the permit counter is decremented. This gives the supervisor full control over entering next stages by the vehicles. Such control is necessary to avoid collisions between vehicles.
+For each sector, we define some *special points* lying on the path. They are shown in Figure 2.  At a distance of *r* after the end of the sector lies the *release point* (*rp*), indicating the place where robots disk no longer overlaps the previous sector. The *critical point* (*cp*) lies at the safe distance (*r + bd*) before the beginning of a sector, where *bd* denotes a *braking distance* - maximum distance needed for the robot to slow down and eventually stop. If the robot starts braking at *cp*, it will not enter the next sector. Reaching *cp* and *rp* by the robot results in sending a message containing its ID to the appropriate ROS topic. This message can be read by the supervisor, deciding which vehicle should obtain *movement permission*. *Movement permission* is a one-time permit for passing to the next sector. Such permits can be sent by the supervisor multiple times, and each robot counts permits granted to it. When the *cp* point is reached, if the permission counter of the given robot is 0, it begins to brake and eventually stops, waiting for the permission from the supervisor. Otherwise, one of the permits is consumed - the robot continues without braking, and the permit counter is decremented. This gives the supervisor full control over entering next stages by the vehicles. Such control is necessary to avoid collisions between vehicles. Structure of ROS topics connecting simulator with the supervisor is shown in **Figure 3**.
+
+![](pics/topics.png)
+*__Figure 3:__ ROS nodes and topics between them.*
+
+#### Usage
+
+First, you need to run a supervisor, necessary for the correct execution of the task. Then run the simulator with the command
+
+`rosrun mmrs_simulator simulator <task_file.json>`
+
+Where `<task_file.json>` is a previously prepared JSON file describing the task to be performed by robots. It contains information about their number, and a detailed description of their paths. The sample file may look like this:
+
+```
+{
+    "NumberOfVehicles": 3,
+    "Vehicles": {
+        "Vehicle0": [
+            {
+                "Colliding": [],
+                "Endpoint": 1.6
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 2.1
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 4.4
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 5.2
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 6.6
+            }
+        ],
+        "Vehicle1": [
+            {
+                "Colliding": [],
+                "Endpoint": 6.6
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 6.8
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 7.4
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 9.2
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 11.6
+            }
+        ],
+        "Vehicle2": [
+            {
+                "Colliding": [],
+                "Endpoint": 7.6
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 9.1
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 11.4
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 12.2
+            },
+            {
+                "Colliding": [],
+                "Endpoint": 15.6
+            }
+        ]
+    }
+}
+```
+
 
 #### Summary
 
